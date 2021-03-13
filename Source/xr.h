@@ -1,0 +1,62 @@
+void xr()//写入新班级
+{	
+	side();
+	color(2);zuobiao(35,2);printf("请定义此班级名称：");
+	gets(fn);
+	system("cls");
+	strcpy(fnt,fn);
+	strcat(fnt,".txt");
+	fp=fopen("data.dat","a+");//打开数据文件
+	if(fp==NULL)
+	{ 
+		printf("数据加载错误！请退出查找问题。\n");
+		exit(0);
+	}
+	fi=fopen(fnt,"w");//创建新班级信息文件（放在前面是为了防止录入大量信息后面临无法打开文件的令人崩溃场面）
+	if(fi==NULL)
+	{ 
+		printf("无法更新文件！请退出。\n");
+		exit(0);
+	}
+	color(4);zuobiao(2,27);printf("若想返回，在输入学号的时候键入*即可。");
+	for(i=0;i<N;i++)//向结构体中录入信息
+	{
+		system("cls");
+		side();
+		color(2);zuobiao(20,2);printf("请输入第%d名学生的信息：\n",i+1);
+		studens[i].id=i+1;
+		studens[i].zid=i%5+1;
+		color(2);zuobiao(40,3);printf("学号：");
+		gets(studens[i].no);
+		for(x=0;x<11;x++)//结束录命令
+		{
+			if(studens[i].no[x]=='*')
+				goto line1;
+		}
+		color(2);zuobiao(40,4);printf("姓名：");
+		gets(studens[i].name);
+		color(2);zuobiao(40,5);printf("姓别：");
+		gets(studens[i].sex);
+		color(2);zuobiao(40,6);printf("班级：");
+		gets(studens[i].clas);
+		studens[i].come=0;
+	}
+line1:
+	for(j=0;j<i;j++)//将结构体写入文件
+		fprintf(fi,"%d %d %s %s %s %s %d\n",studens[j].id,studens[j].zid,studens[j].no,studens[j].name,studens[j].sex,studens[j].clas,studens[j].come);
+	fclose(fi);
+	n=0;
+	for(j=0;j<20;j++)//更新数据文件
+	{
+		n++;
+		fscanf(fp,"%d %s %d %d",&sj[j].id,sj[j].name,&sj[j].rs,&sj[j].qd);
+		if(sj[j].id!=n)
+		{
+			n--;
+			break;
+		}
+	}
+	fprintf(fp,"%d %s %d 0\n",n+1,fn,i);
+	fclose(fp);
+	return;
+}
